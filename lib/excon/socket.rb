@@ -121,6 +121,14 @@ module Excon
             end
           end
 
+          # Linux only
+          if defined?(::Socket::Constants::TCP_KEEPIDLE)
+            socket.setsockopt(::Socket::Constants::SOL_SOCKET, ::Socket::Constants::SO_KEEPALIVE, true)
+            socket.setsockopt(::Socket::Constants::SOL_TCP, ::Socket::Constants::TCP_KEEPIDLE, 50)
+            socket.setsockopt(::Socket::Constants::SOL_TCP, ::Socket::Constants::TCP_KEEPINTVL, 10)
+            socket.setsockopt(::Socket::Constants::SOL_TCP, ::Socket::Constants::TCP_KEEPCNT, 5)
+          end
+
           if @nonblock
             socket.connect_nonblock(sockaddr)
           else
